@@ -185,7 +185,7 @@ class TestBalanceTaxonomy(unittest.TestCase):
              ['nom;tu;k;l;m;n;o', 0.9],
              ['nom;tu;k;l;m;t;o', 0.9]],
             columns=['Taxon', 'Confidence'],
-            index=['x', 'y', 'z', 'k', 'q'])
+            index=pd.Index(['x', 'y', 'z', 'k', 'q']))
 
         self.balances = pd.DataFrame(
             [[1, 2, 3, 4, 5, 6, 7],
@@ -193,15 +193,14 @@ class TestBalanceTaxonomy(unittest.TestCase):
              [1, 1, 1, 1, 1, 1, 1],
              [3, 2, 1, 0, -1, -2, -3]],
             index=['d', 'a', 'b', 'c'],
-            columns=['s1', 's2', 's3', 's4', 's5', 's6', 's7']
+            columns=pd.Index(['s1', 's2', 's3', 's4', 's5', 's6', 's7'])
         ).T
         basis, _ = balance_basis(self.tree)
         self.table = pd.DataFrame(
             ilr_inv(self.balances, basis),
             columns=['x', 'y', 'z', 'k', 'q'],
-            index=['s1', 's2', 's3', 's4', 's5', 's6', 's7']
+            index=pd.Index(['s1', 's2', 's3', 's4', 's5', 's6', 's7'])
         )
-
 
         index = pd.Index(['s1', 's2', 's3', 's4', 's5', 's6', 's7'], name='id')
         self.categorical = CategoricalMetadataColumn(
@@ -209,11 +208,9 @@ class TestBalanceTaxonomy(unittest.TestCase):
                       index=index, name='categorical'))
         self.multi_categorical = CategoricalMetadataColumn(
             pd.Series(['a', 'a', 'c', 'b', 'b', 'b', 'c'],
-                      index=['s1', 's2', 's3', 's4', 's5', 's6', 's7'],
-                      name='multi_categorical'))
+                      index=index, name='multi_categorical'))
         self.continuous = NumericMetadataColumn(
             pd.Series(np.arange(7), index=index, name='continuous'))
-
 
     def tearDown(self):
         shutil.rmtree(self.results)

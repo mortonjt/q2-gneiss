@@ -104,6 +104,7 @@ def balance_taxonomy(output_dir: str, table: pd.DataFrame, tree: TreeNode,
     fig.savefig(os.path.join(output_dir, 'barplots.pdf'))
 
     dcat = None
+    multiple_categories = False
 
     if metadata is not None:
         fig2, ax = plt.subplots()
@@ -143,8 +144,9 @@ def balance_taxonomy(output_dir: str, table: pd.DataFrame, tree: TreeNode,
                     'More than 2 categories detected in categorical metadata '
                     'column. Proportion plots will not be displayed',
                     stacklevel=2)
-            else:
-                dcat = c
+                multiple_categories = True
+
+            dcat = c
 
         else:
             # Some other type of MetadataColumn
@@ -160,6 +162,7 @@ def balance_taxonomy(output_dir: str, table: pd.DataFrame, tree: TreeNode,
             fig2.savefig(os.path.join(output_dir, 'balance_metadata.svg'))
             fig2.savefig(os.path.join(output_dir, 'balance_metadata.pdf'))
 
+        if not multiple_categories:
             # Proportion plots
             # first sort by clr values and calculate average fold change
             ctable = pd.DataFrame(clr(centralize(table)),
@@ -265,7 +268,7 @@ def balance_taxonomy(output_dir: str, table: pd.DataFrame, tree: TreeNode,
                            '<a href="balance_metadata.pdf">'
                            'Download as PDF</a><br>\n'))
 
-        if dcat is not None:
+        if not multiple_categories:
             index_f.write('<h1>Proportion Plot </h1>\n')
             index_f.write(('<img src="proportion_plot.svg" '
                            'alt="proportions">\n\n'
